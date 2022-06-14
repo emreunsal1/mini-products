@@ -26,8 +26,6 @@ const main = () => {
       },
     },
   };
-  if (screen.width < 700) {
-  }
 
   $(document).ready(() => {
     $(".owl-carousel").owlCarousel(carouselOptions);
@@ -54,10 +52,6 @@ const main = () => {
       }
 
       categoryElement.addEventListener("click", (e) => {
-        // const productDetailEl = document.querySelector(".product-price");
-        // if (productDetailEl) {
-        //   document.querySelector(".product-detail-container").removeChild(productDetailEl);
-        // }
         selectedCategory = categoryElement.id;
         document.querySelector(".header-item.selected").classList.remove("selected");
         e.target.classList.add("selected");
