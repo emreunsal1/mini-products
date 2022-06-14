@@ -1,61 +1,83 @@
-import userCategories from "./dataJson/userCategories";
-import { getProductList } from "./dataJson/productsList";
+import { getCategories, getProductList, createProductCard } from "./src/utils";
+import "./style/main.scss";
 
-const headerDomElement = document.querySelector("#main-header");
-const productContainerDomElement = document.querySelector("#product-container");
-const productDetailContainerElement = document.querySelector(
-  "#product-detail-container"
-);
-let selectedCategorie = "Size Özel";
-const priceFormatter = new Intl.NumberFormat("tr-TR", {
-  style: "currency",
-  currency: "TRY",
-  currencyDisplay: "name",
-  minimumFractionDigits: 2,
-});
-
-if (userCategories) {
-  userCategories.map((categorie) => {
-    const categorieElement = document.createElement("div");
-    categorieElement.className = "header-item";
-    categorieElement.id = categorie;
-    categorieElement.innerHTML = categorie;
-    categorieElement.addEventListener("click", () => {
-      selectedCategorie = categorieElement.id;
-      showProductList();
-    });
-    headerDomElement.appendChild(categorieElement);
-  });
-}
-
-const showProductList = () => {
-  productContainerDomElement.innerHTML = "";
-  if (!getProductList(selectedCategorie)) {
-    return false;
+const main = () => {
+  const headerDomElement = document.querySelector("#main-header");
+  const productContainerDomElement = document.querySelector("#product-container");
+  const carouselOptions = {
+    margin: 10,
+    items: 4,
+    center: false,
+    nav: true,
+    lazyLoad: true,
+    responsive: {
+      0: {
+        items: 2,
+        nav: true,
+      },
+      600: {
+        items: 2,
+        nav: false,
+      },
+      1000: {
+        items: 4,
+        nav: true,
+        loop: false,
+      },
+    },
+  };
+  if (screen.width < 700) {
   }
-  getProductList(selectedCategorie).map((product) => {
-    const productCardElement = document.createElement("div");
-    const productNameElement = document.createElement("div");
-    productCardElement.className = "product-card";
-    productCardElement.id = "product-card";
-    productNameElement.className = "product-name";
-    productNameElement.id = "product-name";
-    productNameElement.innerHTML = product.name;
-    productCardElement.appendChild(productNameElement);
-    productCardElement.addEventListener("click", () =>
-      showProductDetail(product)
-    );
-    productContainerDomElement.appendChild(productCardElement);
+
+  $(document).ready(() => {
+    $(".owl-carousel").owlCarousel(carouselOptions);
   });
+
+  const categories = getCategories();
+
+  let selectedCategory;
+
+  if (categories?.length) {
+    selectedCategory = categories[0];
+    categories.forEach((category) => {
+      const categoryElement = document.createElement("div");
+      categoryElement.className = "header-item";
+      categoryElement.id = category;
+      let categoryText = category;
+      if (category.includes(">")) {
+        categoryText = category.split(">")[1].trim();
+      }
+      categoryElement.innerHTML = categoryText;
+
+      if (selectedCategory == category) {
+        categoryElement.classList.add("selected");
+      }
+
+      categoryElement.addEventListener("click", (e) => {
+        // const productDetailEl = document.querySelector(".product-price");
+        // if (productDetailEl) {
+        //   document.querySelector(".product-detail-container").removeChild(productDetailEl);
+        // }
+        selectedCategory = categoryElement.id;
+        document.querySelector(".header-item.selected").classList.remove("selected");
+        e.target.classList.add("selected");
+        showProductList();
+        $(".owl-carousel").owlCarousel("destroy");
+        $(".owl-carousel").owlCarousel(carouselOptions);
+      });
+      headerDomElement.appendChild(categoryElement);
+    });
+  }
+
+  const showProductList = () => {
+    const productList = getProductList(selectedCategory);
+    if (!productList) {
+      return false;
+    }
+    productContainerDomElement.innerHTML = "";
+    productList.forEach((product) => productContainerDomElement.appendChild(createProductCard(product)));
+  };
+  showProductList();
 };
 
-const showProductDetail = (product) => {
-  productDetailContainerElement.innerHTML = "";
-  const productPriceElement = document.createElement("div");
-  productPriceElement.className = "product-price";
-  productPriceElement.id = product.productId;
-  productPriceElement.innerHTML = priceFormatter.format(product.price);
-  productDetailContainerElement.appendChild(productPriceElement);
-};
-
-showProductList();
+window.addEventListener("load", () => main());
