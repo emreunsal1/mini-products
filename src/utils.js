@@ -55,7 +55,7 @@ export const createProductCard = (product) => {
 
   productCargoElement.className = "product-cargo";
   productCargoElement.innerHTML = "Ücretsiz Kargo";
-  cargoTruckIcon.src = "../src/truck.png";
+  cargoTruckIcon.src = "/truck.png";
   productCargoElement.appendChild(cargoTruckIcon);
 
   productAddBasketElement.className = "product-add-basket";
@@ -63,7 +63,6 @@ export const createProductCard = (product) => {
 
   productAddBasketElement.addEventListener("click", async () => {
     const basketPopupElement = document.querySelector("#add-basket-popup");
-    basketPopupElement.style.display = "flex";
     basketPopupElement.style.transform = "translateX(-10%)";
     setTimeout(() => {
       basketPopupElement.style.transform = "translateX(100%)";

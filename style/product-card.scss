@@ -25,13 +25,15 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     margin-bottom: 20px;
-    font-size: 14px;
+    font-size: 12px;
+    font-weight: 500;
   }
   .product-price {
     margin-bottom: 10px;
     padding: 10px;
     background-color: #ececec;
     border-radius: 5px;
+    font-weight: bold;
   }
   .product-cargo {
     margin-bottom: 10px;
